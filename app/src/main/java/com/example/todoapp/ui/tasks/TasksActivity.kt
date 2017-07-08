@@ -36,8 +36,7 @@ class TasksActivity :BaseActivity() {
 
     fun initFragment() {
         supportFragmentManager.findFragmentByTag(TasksFragment.TAG)?: TasksFragment.newInstance().apply {
-            supportFragmentManager
-                    .beginTransaction()
+            supportFragmentManager.beginTransaction()
                     .add(R.id.container, this, TasksFragment.TAG)
                     .commit()
         }

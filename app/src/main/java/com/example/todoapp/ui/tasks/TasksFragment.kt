@@ -2,6 +2,7 @@ package com.example.todoapp.ui.tasks
 
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +16,9 @@ class TasksFragment : BaseFragment(){
 
     lateinit var binding: FragmentTasksBinding
 
-    lateinit var viewModel: TasksViewModel
+    val viewModel: TasksViewModel by lazy {
+        ViewModelProviders.of(activity).get(TasksViewModel::class.java)
+    }
 
     companion object {
         val TAG: String = TasksFragment::class.java.simpleName
@@ -24,12 +27,15 @@ class TasksFragment : BaseFragment(){
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentTasksBinding.inflate(inflater, container, false)
+        initRecyclerView()
         return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(activity).get(TasksViewModel::class.java)
+    fun initRecyclerView() {
+        val layoutManager = LinearLayoutManager(context)
+        binding.recyclerView.adapter = TasksViewAdapter(viewModel)
+        binding.recyclerView.layoutManager = layoutManager
     }
 
 }
+
