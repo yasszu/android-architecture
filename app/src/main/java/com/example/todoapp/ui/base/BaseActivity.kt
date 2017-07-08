@@ -20,7 +20,6 @@ open class BaseActivity : android.support.v7.app.AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setFullScreenMode()
     }
 
     fun setFullScreenMode() {

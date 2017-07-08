@@ -2,7 +2,6 @@ package com.example.todoapp.ui.tasks
 
 import android.arch.lifecycle.ViewModelProviders
 import android.databinding.DataBindingUtil
-import android.util.Log
 import com.example.todoapp.R
 import com.example.todoapp.databinding.ActivityTasksBinding
 import com.example.todoapp.ui.base.BaseActivity
@@ -16,8 +15,8 @@ class TasksActivity :BaseActivity() {
     override fun onCreate(savedInstanceState: android.os.Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_tasks)
+        setSupportActionBar(binding.toolbar)
         initViewModel()
-        initToolbar()
         initFragment()
     }
 
@@ -33,12 +32,6 @@ class TasksActivity :BaseActivity() {
 
     fun initViewModel() {
         viewModel = ViewModelProviders.of(this).get(TasksViewModel::class.java)
-    }
-
-    fun initToolbar() {
-        setSupportActionBar(binding.toolbar)
-        binding.toolbar.setPadding(0, statusBarHeight, 0, 0)
-        Log.d("height", statusBarHeight.toString())
     }
 
     fun initFragment() {
