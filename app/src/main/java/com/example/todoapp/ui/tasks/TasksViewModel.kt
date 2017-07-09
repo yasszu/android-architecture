@@ -18,6 +18,8 @@ class TasksViewModel: ViewModel(), TaskNavigator {
 
     val taskItems: ObservableList<TaskViewModel> = ObservableArrayList()
 
+    val lastTaskItems: ObservableList<TaskViewModel> = ObservableArrayList()
+
     init {
         fetchTasks()
     }
@@ -28,6 +30,22 @@ class TasksViewModel: ViewModel(), TaskNavigator {
                 .doOnNext { it.setNavigator(this) }
                 .doOnNext { taskItems.add(it) }
                 .subscribe()
+    }
+
+    fun moveItem(from: Int, to: Int) {
+        val target = taskItems[from]
+        taskItems.removeAt(from)
+        taskItems.add(to, target)
+    }
+
+    fun removeItem(index: Int) {
+        storeLastItems()
+        taskItems.removeAt(index)
+    }
+
+    fun storeLastItems() {
+        lastTaskItems.clear()
+        lastTaskItems.addAll(taskItems)
     }
 
     override fun onClickItem(task: Task) {
