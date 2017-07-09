@@ -13,8 +13,7 @@ class ItemTouchHelperCallback(val adapter: ItemTouchHelperAdapter): ItemTouchHel
         ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
 
     val ALPHA_FULL = 1.0f
-
-    val ALPHA_MAGNIFICATION = 1.3f
+    val ALPHA_MAGNIFICATION = 1.2f
 
     override fun onMove(recyclerView: RecyclerView, holder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
         val fromPos = holder.adapterPosition
