@@ -2,6 +2,9 @@
 * Kotlin
 * MVVM
 * [Architecture Components](https://developer.android.com/topic/libraries/architecture/viewmodel.html)
+* [ItemTouchHelper](https://developer.android.com/reference/android/support/v7/widget/helper/ItemTouchHelper.SimpleCallback.html)   
+
+![Snapshot](docs/snapshot.gif)
 
 ## Prerequisites
 * Android SDK 25
