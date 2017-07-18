@@ -2,6 +2,7 @@ package com.example.todoapp.ui.tasks
 
 import android.arch.lifecycle.ViewModelProviders
 import android.databinding.DataBindingUtil
+import android.support.design.widget.Snackbar
 import com.example.todoapp.R
 import com.example.todoapp.databinding.ActivityTasksBinding
 import com.example.todoapp.ui.base.BaseActivity
@@ -32,6 +33,7 @@ class TasksActivity :BaseActivity() {
 
     fun initViewModel() {
         viewModel = ViewModelProviders.of(this).get(TasksViewModel::class.java)
+        viewModel.onRemoveItem = { showDeleteSnackbar() }
     }
 
     fun initFragment() {
@@ -40,6 +42,12 @@ class TasksActivity :BaseActivity() {
                     .add(R.id.container, this, TasksFragment.TAG)
                     .commit()
         }
+    }
+
+    fun showDeleteSnackbar() {
+        Snackbar.make(binding.parentLayout, R.string.item_remove, Snackbar.LENGTH_LONG)
+                .setAction(R.string.undo, { viewModel.restoreLastItems() })
+                .show()
     }
 
 }
