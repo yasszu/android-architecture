@@ -18,7 +18,11 @@ class TasksViewModel: ViewModel(), TaskNavigator {
 
     val taskItems: ObservableList<TaskViewModel> = ObservableArrayList()
 
-    val lastTaskItems: ObservableList<TaskViewModel> = ObservableArrayList()
+    var lastItem: Pair<Int, TaskViewModel>? = null
+
+    var observableListCallback: ObservableList.OnListChangedCallback<ObservableList<TaskViewModel>>? = null
+
+    var onRemoveItem: () -> Unit = {}
 
     init {
         fetchTasks()
@@ -32,20 +36,48 @@ class TasksViewModel: ViewModel(), TaskNavigator {
                 .subscribe()
     }
 
-    fun moveItem(from: Int, to: Int) {
+    /**
+     * Don't call an OnListChangedCallback.
+     */
+    fun moveItem(from: Int, to: Int, onItemMoved: () -> Unit) {
+        removeObservableListCallback()
+        moveItem(from, to)
+        onItemMoved()
+        restoreObservableListCallback()
+    }
+
+    private fun moveItem(from: Int, to: Int) {
         val target = taskItems[from]
         taskItems.removeAt(from)
         taskItems.add(to, target)
     }
 
-    fun removeItem(index: Int) {
-        storeLastItems()
-        taskItems.removeAt(index)
+    fun removeItem(from: Int) {
+        storeLastItem(from)
+        taskItems.removeAt(from)
+        onRemoveItem()
     }
 
-    fun storeLastItems() {
-        lastTaskItems.clear()
-        lastTaskItems.addAll(taskItems)
+    fun storeLastItem(index: Int) {
+        lastItem = Pair(index, taskItems[index])
+    }
+
+    fun restoreLastItems() {
+        lastItem?.let { taskItems.add(it.first, it.second) }
+    }
+
+    fun addObservableListCallBack(callback: ObservableList.OnListChangedCallback<ObservableList<TaskViewModel>>) {
+        taskItems.addOnListChangedCallback(callback)
+        observableListCallback = callback
+    }
+
+    fun removeObservableListCallback() {
+        observableListCallback?.let { taskItems.removeOnListChangedCallback(it) }
+
+    }
+
+    fun restoreObservableListCallback() {
+        observableListCallback?.let { taskItems.addOnListChangedCallback(it) }
     }
 
     override fun onClickItem(task: Task) {
@@ -55,6 +87,7 @@ class TasksViewModel: ViewModel(), TaskNavigator {
     override fun onCleared() {
         super.onCleared()
         compositeDisposable.clear()
+        removeObservableListCallback()
     }
 
 }
