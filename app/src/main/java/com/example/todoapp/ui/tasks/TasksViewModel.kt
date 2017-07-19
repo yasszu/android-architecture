@@ -36,10 +36,8 @@ class TasksViewModel: ViewModel(), TaskNavigator {
                 .subscribe()
     }
 
-    /**
-     * Don't call an OnListChangedCallback.
-     */
     fun moveItem(from: Int, to: Int, onItemMoved: () -> Unit) {
+        // Don't call OnListChangedCallback.
         removeObservableListCallback()
         moveItem(from, to)
         onItemMoved()
@@ -73,7 +71,6 @@ class TasksViewModel: ViewModel(), TaskNavigator {
 
     fun removeObservableListCallback() {
         observableListCallback?.let { taskItems.removeOnListChangedCallback(it) }
-
     }
 
     fun restoreObservableListCallback() {
