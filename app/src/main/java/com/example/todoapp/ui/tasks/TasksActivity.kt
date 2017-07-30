@@ -6,8 +6,9 @@ import android.support.design.widget.Snackbar
 import com.example.todoapp.R
 import com.example.todoapp.databinding.ActivityTasksBinding
 import com.example.todoapp.ui.base.BaseActivity
+import com.example.todoapp.ui.edit.EditTaskActivity
 
-class TasksActivity :BaseActivity() {
+class TasksActivity: BaseActivity(), TasksViewModel.Listener {
 
     lateinit var binding: ActivityTasksBinding
 
@@ -31,9 +32,18 @@ class TasksActivity :BaseActivity() {
             else -> super.onOptionsItemSelected(item)
     }
 
+    override fun onRemoveItem() {
+        showDeleteSnackbar()
+    }
+
+    override fun onClickFAB() {
+        EditTaskActivity.start(this)
+    }
+
     fun initViewModel() {
         viewModel = ViewModelProviders.of(this).get(TasksViewModel::class.java)
-        viewModel.onRemoveItem = { showDeleteSnackbar() }
+        viewModel.listener = this
+        binding.viewModel = viewModel
     }
 
     fun initFragment() {

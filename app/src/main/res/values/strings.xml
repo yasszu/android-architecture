@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">TODO</string>
     <string name="action_settings">Settings</string>
+    <string name="action_done">Done</string>
 
     <string name="undo">undo</string>
     <string name="item_remove">1 item removed</string>
