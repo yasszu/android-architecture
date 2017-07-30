@@ -15,15 +15,15 @@ import com.example.todoapp.ui.base.BaseFragment
 /**
  * A placeholder fragment containing a simple view.
  */
-class TasksFragment : BaseFragment(){
+class TasksFragment : BaseFragment() {
 
     lateinit var binding: FragmentTasksBinding
-
-    val adapter: TasksViewAdapter by lazy { TasksViewAdapter(viewModel) }
 
     val viewModel: TasksViewModel by lazy {
         ViewModelProviders.of(activity).get(TasksViewModel::class.java)
     }
+
+    val adapter: TasksViewAdapter by lazy { TasksViewAdapter(viewModel) }
 
     companion object {
         val TAG: String = TasksFragment::class.java.simpleName

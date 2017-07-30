@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModel
 import android.databinding.ObservableArrayList
 import android.databinding.ObservableList
 import android.util.Log
+import android.view.View
 import com.example.todoapp.data.TasksRepository
 import com.example.todoapp.model.Task
 import io.reactivex.Observable
@@ -14,6 +15,11 @@ import io.reactivex.disposables.CompositeDisposable
  */
 class TasksViewModel: ViewModel(), TaskNavigator {
 
+    interface Listener {
+        fun onRemoveItem()
+        fun onClickFAB()
+    }
+
     val compositeDisposable = CompositeDisposable()
 
     val taskItems: ObservableList<TaskViewModel> = ObservableArrayList()
@@ -22,7 +28,7 @@ class TasksViewModel: ViewModel(), TaskNavigator {
 
     var observableListCallback: ObservableList.OnListChangedCallback<ObservableList<TaskViewModel>>? = null
 
-    var onRemoveItem: () -> Unit = {}
+    var listener: Listener? = null
 
     init {
         fetchTasks()
@@ -53,7 +59,7 @@ class TasksViewModel: ViewModel(), TaskNavigator {
     fun removeItem(from: Int) {
         storeLastItem(from)
         taskItems.removeAt(from)
-        onRemoveItem()
+        listener?.onRemoveItem()
     }
 
     fun storeLastItem(index: Int) {
@@ -77,12 +83,20 @@ class TasksViewModel: ViewModel(), TaskNavigator {
         observableListCallback?.let { taskItems.addOnListChangedCallback(it) }
     }
 
+    /**
+     * ListenerBinding
+     */
+    fun onClickFAB(view: View) {
+        listener?.onClickFAB()
+    }
+
     override fun onClickItem(task: Task) {
         Log.d("TaskNavigator", task.id.toString())
     }
 
     override fun onCleared() {
         super.onCleared()
+        listener = null
         compositeDisposable.clear()
         removeObservableListCallback()
     }
