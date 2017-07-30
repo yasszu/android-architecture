@@ -26,6 +26,7 @@ class EditTaskFragment: BaseFragment() {
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentEditTaskBinding.inflate(inflater, container, false)
+        binding.viewModel = viewModel
         return binding.root
     }
 

@@ -1,13 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.todoapp.ui.edit.EditTaskViewModel"/>
+    </data>
     <RelativeLayout
-        android:orientation="vertical" android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Title"/>
-
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/margin">
+        <FrameLayout
+            android:id="@+id/title_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@android:color/transparent"
+                android:hint="Title"
+                android:textColor="@color/black"
+                android:inputType="text"
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:text="@={viewModel.title}" />
+        </FrameLayout>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/title_layout">
+            <FrameLayout
+                android:id="@+id/content_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@android:color/transparent"
+                    android:hint="Content"
+                    android:textColor="@color/black"
+                    android:inputType="textMultiLine"
+                    android:text="@={viewModel.content}"/>
+            </FrameLayout>
+        </ScrollView>
     </RelativeLayout>
 </layout>
