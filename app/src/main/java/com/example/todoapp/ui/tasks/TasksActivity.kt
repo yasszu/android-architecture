@@ -1,8 +1,14 @@
 package com.example.todoapp.ui.tasks
 
+import android.app.Activity
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.databinding.DataBindingUtil
+import android.os.Bundle
 import android.support.design.widget.Snackbar
+import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import com.example.todoapp.R
 import com.example.todoapp.databinding.ActivityTasksBinding
 import com.example.todoapp.ui.base.BaseActivity
@@ -10,11 +16,13 @@ import com.example.todoapp.ui.edit.EditTaskActivity
 
 class TasksActivity: BaseActivity(), TasksViewModel.Listener {
 
+    val REQUEST_EDIT_TASK = 1
+
     lateinit var binding: ActivityTasksBinding
 
     lateinit var viewModel: TasksViewModel
 
-    override fun onCreate(savedInstanceState: android.os.Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_tasks)
         setSupportActionBar(binding.toolbar)
@@ -22,14 +30,23 @@ class TasksActivity: BaseActivity(), TasksViewModel.Listener {
         initFragment()
     }
 
-    override fun onCreateOptionsMenu(menu: android.view.Menu): Boolean {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                REQUEST_EDIT_TASK -> { Log.d("EditTask", "RESULT_OK") }
+            }
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
 
-    override fun onOptionsItemSelected(item: android.view.MenuItem) = when(item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
+    override fun onOptionsItemSelected(item: MenuItem) = when(item.itemId) {
+        R.id.action_settings -> true
+        else -> super.onOptionsItemSelected(item)
     }
 
     override fun onRemoveItem() {
@@ -37,7 +54,7 @@ class TasksActivity: BaseActivity(), TasksViewModel.Listener {
     }
 
     override fun onClickFAB() {
-        EditTaskActivity.start(this)
+        EditTaskActivity.start(this, REQUEST_EDIT_TASK)
     }
 
     fun initViewModel() {
@@ -47,9 +64,11 @@ class TasksActivity: BaseActivity(), TasksViewModel.Listener {
     }
 
     fun initFragment() {
-        supportFragmentManager.findFragmentByTag(TasksFragment.TAG)?: TasksFragment.newInstance().apply {
-            supportFragmentManager.beginTransaction()
-                    .add(R.id.container, this, TasksFragment.TAG)
+        val fm = supportFragmentManager
+        val tag = TasksFragment.TAG
+        fm.findFragmentByTag(tag)?: TasksFragment.newInstance().apply {
+            fm.beginTransaction()
+                    .add(R.id.container, this, tag)
                     .commit()
         }
     }

@@ -15,4 +15,7 @@ object DateUtil {
                 .format(Calendar.getInstance().time)
                 .toString()
 
+    val timestump: Long
+        get() = System.currentTimeMillis()
+
 }

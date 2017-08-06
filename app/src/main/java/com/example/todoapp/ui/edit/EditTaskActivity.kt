@@ -6,6 +6,8 @@ import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.design.widget.Snackbar
+import android.view.Menu
+import android.view.MenuItem
 import com.example.todoapp.R
 import com.example.todoapp.databinding.ActivityEditTaskBinding
 import com.example.todoapp.ui.base.BaseActivity
@@ -33,12 +35,12 @@ class EditTaskActivity: BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
-    override fun onCreateOptionsMenu(menu: android.view.Menu): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_edit_task, menu)
         return true
     }
 
-    override fun onOptionsItemSelected(item: android.view.MenuItem) = when(item.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem) = when(item.itemId) {
         android.R.id.home -> {
             finish()
             true
@@ -56,7 +58,7 @@ class EditTaskActivity: BaseActivity() {
     }
 
     fun save(): Boolean {
-        viewModel.save({ finish() }, { showErrorSnackbar(it) })
+        viewModel.save({ finishEdit() }, { showErrorSnackbar(it) })
         return true
     }
 
@@ -66,10 +68,15 @@ class EditTaskActivity: BaseActivity() {
         snackbar.show()
     }
 
+    fun finishEdit() {
+        setResult(Activity.RESULT_OK)
+        finish()
+    }
+
     companion object {
-        fun start(activity: Activity) {
+        fun start(activity: Activity, requestCode: Int) {
             val intent = Intent(activity, EditTaskActivity::class.java)
-            activity.startActivity(intent)
+            activity.startActivityForResult(intent, requestCode)
         }
     }
 
