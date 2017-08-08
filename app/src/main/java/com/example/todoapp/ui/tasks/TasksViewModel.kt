@@ -42,20 +42,6 @@ class TasksViewModel: ViewModel(), TaskNavigator {
                 .subscribe()
     }
 
-    fun moveItem(from: Int, to: Int, onItemMoved: () -> Unit) {
-        // Don't call OnListChangedCallback.
-        removeObservableListCallback()
-        moveItem(from, to)
-        onItemMoved()
-        restoreObservableListCallback()
-    }
-
-    private fun moveItem(from: Int, to: Int) {
-        val target = taskItems[from]
-        taskItems.removeAt(from)
-        taskItems.add(to, target)
-    }
-
     fun removeItem(from: Int) {
         storeLastItem(from)
         taskItems.removeAt(from)
@@ -77,10 +63,6 @@ class TasksViewModel: ViewModel(), TaskNavigator {
 
     fun removeObservableListCallback() {
         observableListCallback?.let { taskItems.removeOnListChangedCallback(it) }
-    }
-
-    fun restoreObservableListCallback() {
-        observableListCallback?.let { taskItems.addOnListChangedCallback(it) }
     }
 
     /**

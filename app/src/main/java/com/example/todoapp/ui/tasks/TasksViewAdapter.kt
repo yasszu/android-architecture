@@ -32,7 +32,7 @@ class TasksViewAdapter(val viewModel: TasksViewModel):
             }
 
             override fun onItemRangeMoved(sender: ObservableList<TaskViewModel>?, from: Int, to: Int, count: Int) {
-                // Don't implement notify
+                notifyItemRangeRemoved(from, count)
             }
 
             override fun onItemRangeRemoved(sender: ObservableList<TaskViewModel>?, start: Int, count: Int) {
@@ -57,7 +57,6 @@ class TasksViewAdapter(val viewModel: TasksViewModel):
     }
 
     override fun onMoveItem(from: Int, to: Int) {
-        viewModel.moveItem(from, to, { notifyItemMoved(from, to) })
     }
 
     override fun onRemoveItem(from: Int) {
