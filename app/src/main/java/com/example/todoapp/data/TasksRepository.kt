@@ -26,6 +26,11 @@ object TasksRepository {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
 
+    fun deleteTask(id: String): Completable = Completable
+            .fromAction({ database.tasksDao().delete(id) })
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+
     fun deleteAllTasks(): Completable = Completable
             .fromAction({ database.tasksDao().deleteAll() })
             .subscribeOn(Schedulers.io())

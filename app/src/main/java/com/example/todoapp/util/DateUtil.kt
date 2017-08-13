@@ -8,7 +8,7 @@ import java.util.*
  */
 object DateUtil {
 
-    val PATTERN = "yyyy-MM-dd'T'HH:mm:ssZ"
+    val PATTERN = "yyyy-MM-dd HH:mm:ss.sss"
 
     val currentDate: String
         get() = SimpleDateFormat(PATTERN, Locale.JAPAN)

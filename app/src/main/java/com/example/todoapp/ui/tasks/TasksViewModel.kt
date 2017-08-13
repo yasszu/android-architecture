@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.View
 import com.example.todoapp.data.TasksRepository
 import com.example.todoapp.model.Task
+import com.example.todoapp.ui.edit.OnSuccess
 import io.reactivex.Flowable
 import io.reactivex.disposables.CompositeDisposable
 
@@ -55,11 +56,43 @@ class TasksViewModel: ViewModel(), TaskNavigator {
     }
 
     fun deleteTasks() {
-        TasksRepository
+        val  disposable = TasksRepository
                 .deleteAllTasks()
                 .subscribe(
                         { removeAllItems() },
                         { it.printStackTrace() })
+        compositeDisposable.add(disposable)
+    }
+
+    fun deleteTask(id: String, onSuccess: OnSuccess) {
+        val disposable = TasksRepository.deleteTask(id)
+                .subscribe(
+                        { onSuccess() },
+                        { it.printStackTrace() }
+                )
+        compositeDisposable.add(disposable)
+    }
+
+    private fun saveTask(task: Task, onSuccess: OnSuccess) {
+        val disposable = TasksRepository
+                .saveTask(task)
+                .subscribe(
+                        { onSuccess() },
+                        { it.printStackTrace() }
+                )
+        compositeDisposable.add(disposable)
+    }
+
+    fun removeItem(from: Int) {
+        storeLastItem(from)
+        deleteTask(taskItems[from].task.get().id, { taskItems.removeAt(from) })
+        listener?.onRemoveItem()
+    }
+
+    fun removeAllItems() {
+        while (size > 0) {
+            taskItems.removeAt(size - 1)
+        }
     }
 
     fun refreshTasks() {
@@ -67,24 +100,16 @@ class TasksViewModel: ViewModel(), TaskNavigator {
         fetchTasks()
     }
 
-    fun removeItem(from: Int) {
-        storeLastItem(from)
-        taskItems.removeAt(from)
-        listener?.onRemoveItem()
-    }
-
-    fun removeAllItems() {
-        do {
-            taskItems.removeAt(size - 1)
-        } while (size > 0)
-    }
-
     fun storeLastItem(index: Int) {
         lastItem = Pair(index, taskItems[index])
     }
 
     fun restoreLastItems() {
-        lastItem?.let { taskItems.add(it.first, it.second) }
+        lastItem?.let {
+            saveTask(it.second.task.get(), {
+                taskItems.add(it.first, it.second)
+            })
+        }
     }
 
     fun addObservableListCallBack(callback: OnListChangedCallback<ObservableList<TaskViewModel>>) {
@@ -105,6 +130,7 @@ class TasksViewModel: ViewModel(), TaskNavigator {
 
     override fun onClickItem(task: Task) {
         Log.d("TaskNavigator", task.id)
+        Log.d("TaskNavigator", task.date)
     }
 
     override fun onCleared() {

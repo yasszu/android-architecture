@@ -16,8 +16,8 @@ interface TasksDao {
     @Update
     fun update(task: Task)
 
-    @Delete
-    fun delete(task: Task)
+    @Query("DELETE FROM tasks WHERE id = :id")
+    fun delete(id: String)
 
     @Query("DELETE FROM tasks")
     fun deleteAll()
@@ -25,7 +25,7 @@ interface TasksDao {
     @Query("SELECT * FROM tasks WHERE id = :id")
     fun findById(id: String): Single<Task>
 
-    @Query("SELECT * FROM tasks")
+    @Query("SELECT * FROM tasks ORDER BY DATETIME(date) DESC")
     fun findAll(): Single<List<Task>>
 
 }
