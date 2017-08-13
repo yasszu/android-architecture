@@ -36,6 +36,11 @@ class TasksFragment : BaseFragment() {
         return binding.root
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel.fetchTasks()
+    }
+
     fun initRecyclerView() {
         val layoutManager = LinearLayoutManager(context)
         val itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback(adapter))

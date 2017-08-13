@@ -3,11 +3,12 @@ package com.example.todoapp.ui.tasks
 import android.arch.lifecycle.ViewModel
 import android.databinding.ObservableArrayList
 import android.databinding.ObservableList
+import android.databinding.ObservableList.OnListChangedCallback
 import android.util.Log
 import android.view.View
 import com.example.todoapp.data.TasksRepository
 import com.example.todoapp.model.Task
-import io.reactivex.Observable
+import io.reactivex.Flowable
 import io.reactivex.disposables.CompositeDisposable
 
 /**
@@ -24,28 +25,58 @@ class TasksViewModel: ViewModel(), TaskNavigator {
 
     val taskItems: ObservableList<TaskViewModel> = ObservableArrayList()
 
+    val size: Int
+        get() = taskItems.size
+
     var lastItem: Pair<Int, TaskViewModel>? = null
 
-    var observableListCallback: ObservableList.OnListChangedCallback<ObservableList<TaskViewModel>>? = null
+    var observableListCallback: OnListChangedCallback<ObservableList<TaskViewModel>>? = null
 
     var listener: Listener? = null
 
     init {
-        fetchTasks()
     }
 
     fun fetchTasks() {
-        Observable.fromIterable(TasksRepository.getTasks())
+        val disposable = TasksRepository
+                .getTasks()
+                .subscribe(
+                        { setTasks(it) },
+                        { it.printStackTrace() })
+        compositeDisposable.add(disposable)
+    }
+
+    fun setTasks(tasks: List<Task>) {
+        Flowable.fromIterable(tasks)
                 .map { TaskViewModel(it) }
                 .doOnNext { it.setNavigator(this) }
                 .doOnNext { taskItems.add(it) }
                 .subscribe()
     }
 
+    fun deleteTasks() {
+        TasksRepository
+                .deleteAllTasks()
+                .subscribe(
+                        { removeAllItems() },
+                        { it.printStackTrace() })
+    }
+
+    fun refreshTasks() {
+        removeAllItems()
+        fetchTasks()
+    }
+
     fun removeItem(from: Int) {
         storeLastItem(from)
         taskItems.removeAt(from)
         listener?.onRemoveItem()
+    }
+
+    fun removeAllItems() {
+        do {
+            taskItems.removeAt(size - 1)
+        } while (size > 0)
     }
 
     fun storeLastItem(index: Int) {
@@ -56,7 +87,7 @@ class TasksViewModel: ViewModel(), TaskNavigator {
         lastItem?.let { taskItems.add(it.first, it.second) }
     }
 
-    fun addObservableListCallBack(callback: ObservableList.OnListChangedCallback<ObservableList<TaskViewModel>>) {
+    fun addObservableListCallBack(callback: OnListChangedCallback<ObservableList<TaskViewModel>>) {
         taskItems.addOnListChangedCallback(callback)
         observableListCallback = callback
     }
@@ -73,7 +104,7 @@ class TasksViewModel: ViewModel(), TaskNavigator {
     }
 
     override fun onClickItem(task: Task) {
-        Log.d("TaskNavigator", task.id.toString())
+        Log.d("TaskNavigator", task.id)
     }
 
     override fun onCleared() {

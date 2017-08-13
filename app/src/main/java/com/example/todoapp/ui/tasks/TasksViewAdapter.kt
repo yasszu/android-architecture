@@ -42,7 +42,7 @@ class TasksViewAdapter(val viewModel: TasksViewModel):
     }
 
     override fun getItemCount(): Int {
-        return viewModel.taskItems.size
+        return viewModel.size
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, position: Int): RecyclerView.ViewHolder {
