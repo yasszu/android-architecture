@@ -29,5 +29,5 @@ task clean(type: Delete) {
 
 ext {
     supportLibraryVersion = '25.4.0'
-    architectureComponentsVersion = "1.0.0-alpha8"
+    architectureComponentsVersion = '1.0.0-alpha5'
 }
