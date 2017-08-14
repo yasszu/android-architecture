@@ -17,7 +17,8 @@ object TasksRepository {
     lateinit var database: ToDoAppDatabase
 
     fun initialize(context: Context) {
-        database = Room.databaseBuilder(context.applicationContext,
+        database = Room.databaseBuilder(
+                context.applicationContext,
                 ToDoAppDatabase::class.java, "sample.db").build()
     }
 
