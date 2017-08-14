@@ -9,7 +9,7 @@ import android.support.v7.widget.helper.ItemTouchHelper
  * Created by Yasuhiro Suzuki on 2017/07/09.
  */
 class ItemTouchHelperCallback(val adapter: ItemTouchHelperAdapter): ItemTouchHelper.SimpleCallback(
-        ItemTouchHelper.UP or ItemTouchHelper.DOWN,
+        ItemTouchHelper.ACTION_STATE_IDLE,
         ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
 
     val ALPHA_FULL = 1.0f

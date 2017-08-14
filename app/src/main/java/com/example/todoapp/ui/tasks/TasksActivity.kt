@@ -5,7 +5,9 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
+import android.support.annotation.StringRes
 import android.support.design.widget.Snackbar
+import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -34,7 +36,7 @@ class TasksActivity: BaseActivity(), TasksViewModel.Listener {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
-                REQUEST_EDIT_TASK -> { Log.d("EditTask", "RESULT_OK") }
+                REQUEST_EDIT_TASK -> { viewModel.refreshTasks() }
             }
         }
     }
@@ -45,7 +47,10 @@ class TasksActivity: BaseActivity(), TasksViewModel.Listener {
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when(item.itemId) {
-        R.id.action_settings -> true
+        R.id.action_delete_all -> {
+            showDeleteDialog()
+            true
+        }
         else -> super.onOptionsItemSelected(item)
     }
 
@@ -78,5 +83,12 @@ class TasksActivity: BaseActivity(), TasksViewModel.Listener {
                 .setAction(R.string.undo, { viewModel.restoreLastItems() })
                 .show()
     }
+
+    fun showDeleteDialog() = AlertDialog.Builder(this)
+            .setMessage(R.string.delete_all_title)
+            .setPositiveButton(R.string.delete, { _, _ -> viewModel.deleteTasks() })
+            .setNegativeButton(R.string.cancel, { _, _ -> Unit })
+            .create()
+            .show()
 
 }
