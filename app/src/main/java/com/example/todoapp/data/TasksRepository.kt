@@ -1,26 +1,18 @@
 package com.example.todoapp.data
 
-import android.arch.persistence.room.Room
-import android.content.Context
 import com.example.todoapp.model.Task
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.functions.Action
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Created by Yasuhiro Suzuki on 2017/06/18.
  */
-object TasksRepository {
-
-    lateinit var database: ToDoAppDatabase
-
-    fun initialize(context: Context) {
-        database = Room.databaseBuilder(
-                context.applicationContext,
-                ToDoAppDatabase::class.java, "sample.db").build()
-    }
+@Singleton
+class TasksRepository @Inject constructor(val database: AppDatabase) {
 
     fun saveTask(task: Task): Completable = Completable
             .fromAction({ database.tasksDao().insert(task) })

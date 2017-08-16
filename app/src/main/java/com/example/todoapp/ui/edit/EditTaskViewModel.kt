@@ -2,10 +2,12 @@ package com.example.todoapp.ui.edit
 
 import android.arch.lifecycle.ViewModel
 import android.databinding.ObservableField
+import com.example.todoapp.MyApplication
 import com.example.todoapp.data.TasksRepository
 import com.example.todoapp.model.Task
 import com.example.todoapp.util.DateUtil
 import io.reactivex.disposables.CompositeDisposable
+import javax.inject.Inject
 
 /**
  * Created by Yasuhiro Suzuki on 2017/07/30.
@@ -15,6 +17,9 @@ typealias OnSuccess = () -> Unit
 typealias OnError = (error: String) -> Unit
 
 class EditTaskViewModel: ViewModel() {
+
+    @Inject
+    lateinit var tasksRepository: TasksRepository
 
     val ERROR_TITLE = 1
 
@@ -33,6 +38,10 @@ class EditTaskViewModel: ViewModel() {
             description = content.get().trim()
         )
 
+    init {
+        MyApplication.appDatabaseComponent.inject(this)
+    }
+
     fun save(onSuccess: OnSuccess, onError: OnError) = when (validate()) {
         ERROR_TITLE -> onError("No title!")
         ERROR_CONTENT -> onError("No content!")
@@ -40,7 +49,7 @@ class EditTaskViewModel: ViewModel() {
     }
 
     private fun saveTask(onSuccess: OnSuccess, onError: OnError) {
-        val disposable = TasksRepository
+        val disposable = tasksRepository
                 .saveTask(task)
                 .subscribe(
                         { onSuccess() },

@@ -6,16 +6,21 @@ import android.databinding.ObservableList
 import android.databinding.ObservableList.OnListChangedCallback
 import android.util.Log
 import android.view.View
+import com.example.todoapp.MyApplication
 import com.example.todoapp.data.TasksRepository
 import com.example.todoapp.model.Task
 import com.example.todoapp.ui.edit.OnSuccess
 import io.reactivex.Flowable
 import io.reactivex.disposables.CompositeDisposable
+import javax.inject.Inject
 
 /**
  * Created by Yasuhiro Suzuki on 2017/06/18.
  */
 class TasksViewModel: ViewModel(), TaskNavigator {
+
+    @Inject
+    lateinit var tasksRepository: TasksRepository
 
     interface Listener {
         fun onRemoveItem()
@@ -36,10 +41,11 @@ class TasksViewModel: ViewModel(), TaskNavigator {
     var listener: Listener? = null
 
     init {
+        MyApplication.appDatabaseComponent.inject(this)
     }
 
     fun fetchTasks() {
-        val disposable = TasksRepository
+        val disposable = tasksRepository
                 .getTasks()
                 .subscribe(
                         { setTasks(it) },
@@ -56,7 +62,7 @@ class TasksViewModel: ViewModel(), TaskNavigator {
     }
 
     fun deleteTasks() {
-        val  disposable = TasksRepository
+        val  disposable = tasksRepository
                 .deleteAllTasks()
                 .subscribe(
                         { removeAllItems() },
@@ -65,7 +71,8 @@ class TasksViewModel: ViewModel(), TaskNavigator {
     }
 
     fun deleteTask(id: String, onSuccess: OnSuccess) {
-        val disposable = TasksRepository.deleteTask(id)
+        val disposable = tasksRepository
+                .deleteTask(id)
                 .subscribe(
                         { onSuccess() },
                         { it.printStackTrace() }
@@ -74,7 +81,7 @@ class TasksViewModel: ViewModel(), TaskNavigator {
     }
 
     private fun saveTask(task: Task, onSuccess: OnSuccess) {
-        val disposable = TasksRepository
+        val disposable = tasksRepository
                 .saveTask(task)
                 .subscribe(
                         { onSuccess() },
