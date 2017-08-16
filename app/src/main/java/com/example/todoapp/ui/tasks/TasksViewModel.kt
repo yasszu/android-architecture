@@ -19,13 +19,13 @@ import javax.inject.Inject
  */
 class TasksViewModel: ViewModel(), TaskNavigator {
 
-    @Inject
-    lateinit var tasksRepository: TasksRepository
-
     interface Listener {
         fun onRemoveItem()
         fun onClickFAB()
     }
+
+    @Inject
+    lateinit var tasksRepository: TasksRepository
 
     val compositeDisposable = CompositeDisposable()
 
@@ -62,7 +62,7 @@ class TasksViewModel: ViewModel(), TaskNavigator {
     }
 
     fun deleteTasks() {
-        val  disposable = tasksRepository
+        val disposable = tasksRepository
                 .deleteAllTasks()
                 .subscribe(
                         { removeAllItems() },
@@ -91,8 +91,9 @@ class TasksViewModel: ViewModel(), TaskNavigator {
     }
 
     fun removeItem(from: Int) {
+        val taskId = taskItems[from].task.get().id
         storeLastItem(from)
-        deleteTask(taskItems[from].task.get().id, { taskItems.removeAt(from) })
+        deleteTask(taskId, { taskItems.removeAt(from) })
         listener?.onRemoveItem()
     }
 

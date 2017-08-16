@@ -59,14 +59,10 @@ class EditTaskViewModel: ViewModel() {
     }
 
     fun validate(): Int {
-        return if (!validateTitle()) ERROR_TITLE
-        else if (!validateContent()) ERROR_CONTENT
+        return if (title.get().isNullOrBlank()) ERROR_TITLE
+        else if (content.get().isNullOrBlank()) ERROR_CONTENT
         else 0
     }
-
-    fun validateTitle() = !title.get().isNullOrBlank()
-
-    fun validateContent() = !content.get().isNullOrBlank()
 
     override fun onCleared() {
         super.onCleared()
