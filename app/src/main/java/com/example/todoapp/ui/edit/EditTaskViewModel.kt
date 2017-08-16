@@ -26,6 +26,13 @@ class EditTaskViewModel: ViewModel() {
 
     val content = ObservableField<String>()
 
+    val task: Task
+        get() = Task(
+            date = DateUtil.currentDate,
+            title = title.get().trim(),
+            description = content.get().trim()
+        )
+
     fun save(onSuccess: OnSuccess, onError: OnError) = when (validate()) {
         ERROR_TITLE -> onError("No title!")
         ERROR_CONTENT -> onError("No content!")
@@ -34,7 +41,7 @@ class EditTaskViewModel: ViewModel() {
 
     private fun saveTask(onSuccess: OnSuccess, onError: OnError) {
         val disposable = TasksRepository
-                .saveTask(getTask())
+                .saveTask(task)
                 .subscribe(
                         { onSuccess() },
                         { onError(it.message?: "error") }
@@ -42,15 +49,11 @@ class EditTaskViewModel: ViewModel() {
         compositeDisposable.add(disposable)
     }
 
-    fun getTask() = Task(
-            date = DateUtil.currentDate,
-            title = title.get().trim(),
-            description = content.get().trim()
-    )
-
-    fun validate() = if (!validateTitle()) ERROR_TITLE
-    else if (!validateContent()) ERROR_CONTENT
-    else 0
+    fun validate(): Int {
+        return if (!validateTitle()) ERROR_TITLE
+        else if (!validateContent()) ERROR_CONTENT
+        else 0
+    }
 
     fun validateTitle() = !title.get().isNullOrBlank()
 
