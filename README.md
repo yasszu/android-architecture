@@ -1,9 +1,9 @@
-# Example of Architecture Components
-* Kotlin
-* [Data Binding Library](https://developer.android.com/topic/libraries/data-binding/index.html)
-* [Architecture Components](https://developer.android.com/topic/libraries/architecture/index.html)
-    * ViewModel
-    * Room (SQLite object mapping library)
+# Android Architecture Components with Kotlin
+* Architecture Components:
+    * [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel.html)
+    * [Room](https://developer.android.com/topic/libraries/architecture/room.html)
+* RxJava
+* [Data Binding](https://developer.android.com/topic/libraries/data-binding/index.html)
 
 ## Prerequisites
 * Android SDK 25
