@@ -1,4 +1,4 @@
-# Android Architecture Components with Kotlin
+# Architecture Components with Kotlin
 * Architecture Components:
     * [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel.html)
     * [Room](https://developer.android.com/topic/libraries/architecture/room.html)
