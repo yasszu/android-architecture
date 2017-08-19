@@ -5,20 +5,23 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
-import android.support.annotation.StringRes
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AlertDialog
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import com.example.todoapp.MyApplication
 import com.example.todoapp.R
 import com.example.todoapp.databinding.ActivityTasksBinding
 import com.example.todoapp.ui.base.BaseActivity
 import com.example.todoapp.ui.edit.EditTaskActivity
+import javax.inject.Inject
 
-class TasksActivity: BaseActivity(), TasksViewModel.Listener {
+class TasksActivity : BaseActivity(), TasksViewModel.Listener {
 
     val REQUEST_EDIT_TASK = 1
+
+    @Inject
+    lateinit var viewModelFactory: TasksViewModelFactory
 
     lateinit var binding: ActivityTasksBinding
 
@@ -26,6 +29,7 @@ class TasksActivity: BaseActivity(), TasksViewModel.Listener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        MyApplication.appDatabaseComponent.inject(this)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_tasks)
         setSupportActionBar(binding.toolbar)
         initViewModel()
@@ -36,7 +40,9 @@ class TasksActivity: BaseActivity(), TasksViewModel.Listener {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
-                REQUEST_EDIT_TASK -> { viewModel.refreshTasks() }
+                REQUEST_EDIT_TASK -> {
+                    viewModel.refreshTasks()
+                }
             }
         }
     }
@@ -46,7 +52,7 @@ class TasksActivity: BaseActivity(), TasksViewModel.Listener {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem) = when(item.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_delete_all -> {
             showDeleteDialog()
             true
@@ -63,7 +69,7 @@ class TasksActivity: BaseActivity(), TasksViewModel.Listener {
     }
 
     fun initViewModel() {
-        viewModel = ViewModelProviders.of(this).get(TasksViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(TasksViewModel::class.java)
         viewModel.listener = this
         binding.viewModel = viewModel
     }
@@ -71,7 +77,7 @@ class TasksActivity: BaseActivity(), TasksViewModel.Listener {
     fun initFragment() {
         val fm = supportFragmentManager
         val tag = TasksFragment.TAG
-        fm.findFragmentByTag(tag)?: TasksFragment.newInstance().apply {
+        fm.findFragmentByTag(tag) ?: TasksFragment.newInstance().apply {
             fm.beginTransaction()
                     .add(R.id.container, this, tag)
                     .commit()

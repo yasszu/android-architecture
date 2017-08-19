@@ -14,7 +14,7 @@ import io.reactivex.disposables.CompositeDisposable
 typealias OnSuccess = () -> Unit
 typealias OnError = (error: String) -> Unit
 
-class EditTaskViewModel: ViewModel() {
+class EditTaskViewModel(val tasksRepository: TasksRepository) : ViewModel() {
 
     val ERROR_TITLE = 1
 
@@ -28,9 +28,9 @@ class EditTaskViewModel: ViewModel() {
 
     val task: Task
         get() = Task(
-            date = DateUtil.currentDate,
-            title = title.get().trim(),
-            description = content.get().trim()
+                date = DateUtil.currentDate,
+                title = title.get().trim(),
+                description = content.get().trim()
         )
 
     fun save(onSuccess: OnSuccess, onError: OnError) = when (validate()) {
@@ -40,24 +40,20 @@ class EditTaskViewModel: ViewModel() {
     }
 
     private fun saveTask(onSuccess: OnSuccess, onError: OnError) {
-        val disposable = TasksRepository
+        val disposable = tasksRepository
                 .saveTask(task)
                 .subscribe(
                         { onSuccess() },
-                        { onError(it.message?: "error") }
+                        { onError(it.message ?: "error") }
                 )
         compositeDisposable.add(disposable)
     }
 
     fun validate(): Int {
-        return if (!validateTitle()) ERROR_TITLE
-        else if (!validateContent()) ERROR_CONTENT
+        return if (title.get().isNullOrBlank()) ERROR_TITLE
+        else if (content.get().isNullOrBlank()) ERROR_CONTENT
         else 0
     }
-
-    fun validateTitle() = !title.get().isNullOrBlank()
-
-    fun validateContent() = !content.get().isNullOrBlank()
 
     override fun onCleared() {
         super.onCleared()

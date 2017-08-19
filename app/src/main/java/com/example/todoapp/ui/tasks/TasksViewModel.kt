@@ -15,7 +15,7 @@ import io.reactivex.disposables.CompositeDisposable
 /**
  * Created by Yasuhiro Suzuki on 2017/06/18.
  */
-class TasksViewModel: ViewModel(), TaskNavigator {
+class TasksViewModel(val tasksRepository: TasksRepository) : ViewModel(), TaskNavigator {
 
     interface Listener {
         fun onRemoveItem()
@@ -35,11 +35,8 @@ class TasksViewModel: ViewModel(), TaskNavigator {
 
     var listener: Listener? = null
 
-    init {
-    }
-
     fun fetchTasks() {
-        val disposable = TasksRepository
+        val disposable = tasksRepository
                 .getTasks()
                 .subscribe(
                         { setTasks(it) },
@@ -56,7 +53,7 @@ class TasksViewModel: ViewModel(), TaskNavigator {
     }
 
     fun deleteTasks() {
-        val  disposable = TasksRepository
+        val disposable = tasksRepository
                 .deleteAllTasks()
                 .subscribe(
                         { removeAllItems() },
@@ -65,7 +62,8 @@ class TasksViewModel: ViewModel(), TaskNavigator {
     }
 
     fun deleteTask(id: String, onSuccess: OnSuccess) {
-        val disposable = TasksRepository.deleteTask(id)
+        val disposable = tasksRepository
+                .deleteTask(id)
                 .subscribe(
                         { onSuccess() },
                         { it.printStackTrace() }
@@ -74,7 +72,7 @@ class TasksViewModel: ViewModel(), TaskNavigator {
     }
 
     private fun saveTask(task: Task, onSuccess: OnSuccess) {
-        val disposable = TasksRepository
+        val disposable = tasksRepository
                 .saveTask(task)
                 .subscribe(
                         { onSuccess() },
@@ -84,8 +82,9 @@ class TasksViewModel: ViewModel(), TaskNavigator {
     }
 
     fun removeItem(from: Int) {
+        val taskId = taskItems[from].task.get().id
         storeLastItem(from)
-        deleteTask(taskItems[from].task.get().id, { taskItems.removeAt(from) })
+        deleteTask(taskId, { taskItems.removeAt(from) })
         listener?.onRemoveItem()
     }
 

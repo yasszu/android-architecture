@@ -8,7 +8,7 @@ import com.example.todoapp.model.Task
  * Created by Yasuhiro Suzuki on 2017/08/08.
  */
 @Database(entities = arrayOf(Task::class), version = 1)
-abstract class ToDoAppDatabase: RoomDatabase() {
+abstract class AppDatabase : RoomDatabase() {
 
     abstract fun tasksDao(): TasksDao
 
