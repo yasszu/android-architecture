@@ -3,6 +3,7 @@
     * [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel.html)
     * [Room](https://developer.android.com/topic/libraries/architecture/room.html)
 * RxJava
+* Dagger2
 * [Data Binding](https://developer.android.com/topic/libraries/data-binding/index.html)
 
 ## Prerequisites
