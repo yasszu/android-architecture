@@ -6,26 +6,21 @@ import android.databinding.ObservableList
 import android.databinding.ObservableList.OnListChangedCallback
 import android.util.Log
 import android.view.View
-import com.example.todoapp.MyApplication
 import com.example.todoapp.data.TasksRepository
 import com.example.todoapp.model.Task
 import com.example.todoapp.ui.edit.OnSuccess
 import io.reactivex.Flowable
 import io.reactivex.disposables.CompositeDisposable
-import javax.inject.Inject
 
 /**
  * Created by Yasuhiro Suzuki on 2017/06/18.
  */
-class TasksViewModel: ViewModel(), TaskNavigator {
+class TasksViewModel(val tasksRepository: TasksRepository) : ViewModel(), TaskNavigator {
 
     interface Listener {
         fun onRemoveItem()
         fun onClickFAB()
     }
-
-    @Inject
-    lateinit var tasksRepository: TasksRepository
 
     val compositeDisposable = CompositeDisposable()
 
@@ -39,10 +34,6 @@ class TasksViewModel: ViewModel(), TaskNavigator {
     var observableListCallback: OnListChangedCallback<ObservableList<TaskViewModel>>? = null
 
     var listener: Listener? = null
-
-    init {
-        MyApplication.appDatabaseComponent.inject(this)
-    }
 
     fun fetchTasks() {
         val disposable = tasksRepository

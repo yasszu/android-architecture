@@ -2,12 +2,10 @@ package com.example.todoapp.ui.edit
 
 import android.arch.lifecycle.ViewModel
 import android.databinding.ObservableField
-import com.example.todoapp.MyApplication
 import com.example.todoapp.data.TasksRepository
 import com.example.todoapp.model.Task
 import com.example.todoapp.util.DateUtil
 import io.reactivex.disposables.CompositeDisposable
-import javax.inject.Inject
 
 /**
  * Created by Yasuhiro Suzuki on 2017/07/30.
@@ -16,10 +14,7 @@ import javax.inject.Inject
 typealias OnSuccess = () -> Unit
 typealias OnError = (error: String) -> Unit
 
-class EditTaskViewModel: ViewModel() {
-
-    @Inject
-    lateinit var tasksRepository: TasksRepository
+class EditTaskViewModel(val tasksRepository: TasksRepository) : ViewModel() {
 
     val ERROR_TITLE = 1
 
@@ -33,14 +28,10 @@ class EditTaskViewModel: ViewModel() {
 
     val task: Task
         get() = Task(
-            date = DateUtil.currentDate,
-            title = title.get().trim(),
-            description = content.get().trim()
+                date = DateUtil.currentDate,
+                title = title.get().trim(),
+                description = content.get().trim()
         )
-
-    init {
-        MyApplication.appDatabaseComponent.inject(this)
-    }
 
     fun save(onSuccess: OnSuccess, onError: OnError) = when (validate()) {
         ERROR_TITLE -> onError("No title!")
@@ -53,7 +44,7 @@ class EditTaskViewModel: ViewModel() {
                 .saveTask(task)
                 .subscribe(
                         { onSuccess() },
-                        { onError(it.message?: "error") }
+                        { onError(it.message ?: "error") }
                 )
         compositeDisposable.add(disposable)
     }

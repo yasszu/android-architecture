@@ -1,7 +1,7 @@
 package com.example.todoapp.di
 
-import com.example.todoapp.ui.edit.EditTaskViewModel
-import com.example.todoapp.ui.tasks.TasksViewModel
+import com.example.todoapp.ui.edit.EditTaskActivity
+import com.example.todoapp.ui.tasks.TasksActivity
 import dagger.Component
 import javax.inject.Singleton
 
@@ -11,6 +11,9 @@ import javax.inject.Singleton
 @Singleton
 @Component(modules = arrayOf(ApplicationModule::class, AppDatabaseModule::class))
 interface AppDatabaseComponent {
-    fun inject(viewModel: TasksViewModel)
-    fun inject(viewModel: EditTaskViewModel)
+
+    fun inject(activity: TasksActivity)
+
+    fun inject(activity: EditTaskActivity)
+
 }

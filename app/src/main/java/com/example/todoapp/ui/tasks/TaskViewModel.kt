@@ -8,7 +8,7 @@ import java.lang.ref.WeakReference
 /**
  * Created by Yasuhiro Suzuki on 2017/07/08.
  */
-class TaskViewModel(task: Task){
+class TaskViewModel(task: Task) {
 
     val task = ObservableField<Task>()
 

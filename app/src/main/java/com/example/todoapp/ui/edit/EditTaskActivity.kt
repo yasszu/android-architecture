@@ -8,9 +8,12 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.view.Menu
 import android.view.MenuItem
+import com.example.todoapp.MyApplication
 import com.example.todoapp.R
 import com.example.todoapp.databinding.ActivityEditTaskBinding
 import com.example.todoapp.ui.base.BaseActivity
+import com.example.todoapp.ui.tasks.EditTaskViewModelFactory
+import javax.inject.Inject
 
 /**
  * Created by Yasuhiro Suzuki on 2017/07/30.
@@ -18,14 +21,18 @@ import com.example.todoapp.ui.base.BaseActivity
 
 class EditTaskActivity: BaseActivity() {
 
+    @Inject
+    lateinit var viewModelFactory: EditTaskViewModelFactory
+
     lateinit var binding: ActivityEditTaskBinding
 
     lateinit var viewModel: EditTaskViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        MyApplication.appDatabaseComponent.inject(this)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_edit_task)
-        viewModel = ViewModelProviders.of(this).get(EditTaskViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(EditTaskViewModel::class.java)
         initToolBar()
         initFragment()
     }
