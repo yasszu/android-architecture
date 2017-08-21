@@ -33,9 +33,15 @@ class EditTaskActivity : BaseActivity() {
         MyApplication.appDatabaseComponent.inject(this)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_edit_task)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(EditTaskViewModel::class.java)
-        intent.getStringExtra(TASK_ID)?.apply { viewModel.fetchTask(this) }
+        initViewModel(savedInstanceState)
         initToolBar()
         initFragment()
+    }
+
+    fun initViewModel(savedInstanceState: Bundle?) {
+        savedInstanceState ?: intent.getStringExtra(TASK_ID)?.also { id ->
+            viewModel.fetchTask(id)
+        }
     }
 
     fun initToolBar() {
