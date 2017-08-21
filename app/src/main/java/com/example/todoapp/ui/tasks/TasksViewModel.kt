@@ -4,7 +4,6 @@ import android.arch.lifecycle.ViewModel
 import android.databinding.ObservableArrayList
 import android.databinding.ObservableList
 import android.databinding.ObservableList.OnListChangedCallback
-import android.util.Log
 import android.view.View
 import com.example.todoapp.data.TasksRepository
 import com.example.todoapp.model.Task
@@ -20,11 +19,12 @@ class TasksViewModel(val tasksRepository: TasksRepository) : ViewModel(), TaskNa
     interface Listener {
         fun onRemoveItem()
         fun onClickFAB()
+        fun onClickItem(task: Task)
     }
 
     val compositeDisposable = CompositeDisposable()
 
-    val taskItems: ObservableList<TaskViewModel> = ObservableArrayList()
+    val taskItems: ObservableList<TaskViewModel> = ObservableArrayList<TaskViewModel>()
 
     val size: Int
         get() = taskItems.size
@@ -73,7 +73,7 @@ class TasksViewModel(val tasksRepository: TasksRepository) : ViewModel(), TaskNa
 
     private fun saveTask(task: Task, onSuccess: OnSuccess) {
         val disposable = tasksRepository
-                .saveTask(task)
+                .createTask(task)
                 .subscribe(
                         { onSuccess() },
                         { it.printStackTrace() }
@@ -128,8 +128,7 @@ class TasksViewModel(val tasksRepository: TasksRepository) : ViewModel(), TaskNa
     }
 
     override fun onClickItem(task: Task) {
-        Log.d("TaskNavigator", task.id)
-        Log.d("TaskNavigator", task.date)
+        listener?.onClickItem(task)
     }
 
     override fun onCleared() {

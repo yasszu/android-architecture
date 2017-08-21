@@ -12,6 +12,7 @@ import android.view.MenuItem
 import com.example.todoapp.MyApplication
 import com.example.todoapp.R
 import com.example.todoapp.databinding.ActivityTasksBinding
+import com.example.todoapp.model.Task
 import com.example.todoapp.ui.base.BaseActivity
 import com.example.todoapp.ui.edit.EditTaskActivity
 import javax.inject.Inject
@@ -66,6 +67,10 @@ class TasksActivity : BaseActivity(), TasksViewModel.Listener {
 
     override fun onClickFAB() {
         EditTaskActivity.start(this, REQUEST_EDIT_TASK)
+    }
+
+    override fun onClickItem(task: Task) {
+        EditTaskActivity.start(this, REQUEST_EDIT_TASK, task.id)
     }
 
     fun initViewModel() {
