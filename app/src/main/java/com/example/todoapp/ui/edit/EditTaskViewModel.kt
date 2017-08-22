@@ -5,6 +5,9 @@ import android.databinding.ObservableField
 import com.example.todoapp.data.TasksRepository
 import com.example.todoapp.model.Task
 import com.example.todoapp.util.DateUtil
+import com.example.todoapp.util.Error
+import com.example.todoapp.util.OK
+import com.example.todoapp.util.ValidateResult
 import io.reactivex.disposables.CompositeDisposable
 
 /**
@@ -12,15 +15,13 @@ import io.reactivex.disposables.CompositeDisposable
  */
 
 typealias OnSuccess = () -> Unit
-typealias OnError = (error: String) -> Unit
+typealias OnError = (error: String?) -> Unit
 
 class EditTaskViewModel(val tasksRepository: TasksRepository) : ViewModel() {
 
-    val ERROR_TITLE = 1
-
-    val ERROR_CONTENT = 2
-
     val compositeDisposable = CompositeDisposable()
+
+    val taskId = ObservableField<String>()
 
     val title = ObservableField<String>()
 
@@ -30,29 +31,61 @@ class EditTaskViewModel(val tasksRepository: TasksRepository) : ViewModel() {
         get() = Task(
                 date = DateUtil.currentDate,
                 title = title.get().trim(),
-                description = content.get().trim()
-        )
+                description = content.get().trim())
 
-    fun save(onSuccess: OnSuccess, onError: OnError) = when (validate()) {
-        ERROR_TITLE -> onError("No title!")
-        ERROR_CONTENT -> onError("No content!")
-        else -> saveTask(onSuccess, onError)
-    }
-
-    private fun saveTask(onSuccess: OnSuccess, onError: OnError) {
+    fun fetchTask(taskId: String) {
         val disposable = tasksRepository
-                .saveTask(task)
+                .getTask(taskId)
                 .subscribe(
-                        { onSuccess() },
-                        { onError(it.message ?: "error") }
+                        { setTask(it) },
+                        { it.printStackTrace() }
                 )
         compositeDisposable.add(disposable)
     }
 
-    fun validate(): Int {
-        return if (title.get().isNullOrBlank()) ERROR_TITLE
-        else if (content.get().isNullOrBlank()) ERROR_CONTENT
-        else 0
+    private fun setTask(task: Task) {
+        taskId.set(task.id)
+        title.set(task.title)
+        content.set(task.description)
+    }
+
+    fun save(onSuccess: OnSuccess, onError: OnError) {
+        val result = validate(title.get(), content.get())
+        when (result) {
+            is Error -> onError(result.throwable.message)
+            is OK -> addOrUpdate(onSuccess, onError)
+        }
+    }
+
+    private fun addOrUpdate(onSuccess: OnSuccess, onError: OnError) = when {
+        taskId.get().isNullOrBlank() -> addTask(onSuccess, onError)
+        else -> updateTask(onSuccess, onError)
+    }
+
+    private fun addTask(onSuccess: OnSuccess, onError: OnError) {
+        val disposable = tasksRepository
+                .createTask(task)
+                .subscribe(
+                        { onSuccess() },
+                        { onError(it.message) }
+                )
+        compositeDisposable.add(disposable)
+    }
+
+    private fun updateTask(onSuccess: OnSuccess, onError: OnError) {
+        val disposable = tasksRepository
+                .updateTask(task.copy(id = taskId.get()))
+                .subscribe(
+                        { onSuccess() },
+                        { onError(it.message) }
+                )
+        compositeDisposable.add(disposable)
+    }
+
+    fun validate(title: String?, content: String?): ValidateResult = when {
+        title.isNullOrBlank() -> Error(Throwable("No title!"))
+        content.isNullOrBlank() -> Error(Throwable("No content!"))
+        else -> OK
     }
 
     override fun onCleared() {

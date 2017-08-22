@@ -19,7 +19,7 @@ import javax.inject.Inject
  * Created by Yasuhiro Suzuki on 2017/07/30.
  */
 
-class EditTaskActivity: BaseActivity() {
+class EditTaskActivity : BaseActivity() {
 
     @Inject
     lateinit var viewModelFactory: EditTaskViewModelFactory
@@ -33,8 +33,15 @@ class EditTaskActivity: BaseActivity() {
         MyApplication.appDatabaseComponent.inject(this)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_edit_task)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(EditTaskViewModel::class.java)
+        initViewModel(savedInstanceState)
         initToolBar()
         initFragment()
+    }
+
+    fun initViewModel(savedInstanceState: Bundle?) {
+        savedInstanceState ?: intent.getStringExtra(TASK_ID)?.also { id ->
+            viewModel.fetchTask(id)
+        }
     }
 
     fun initToolBar() {
@@ -47,7 +54,7 @@ class EditTaskActivity: BaseActivity() {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem) = when(item.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         android.R.id.home -> {
             finish()
             true
@@ -59,13 +66,13 @@ class EditTaskActivity: BaseActivity() {
     fun initFragment() {
         val tag = EditTaskFragment.TAG
         val fm = supportFragmentManager
-        fm.findFragmentByTag(tag)?: EditTaskFragment.newInstance().apply {
+        fm.findFragmentByTag(tag) ?: EditTaskFragment.newInstance().apply {
             fm.beginTransaction().add(R.id.container, this, tag).commit()
         }
     }
 
     fun save(): Boolean {
-        viewModel.save({ finishEdit() }, { showErrorSnackbar(it) })
+        viewModel.save({ finishEdit() }, { showErrorSnackbar(it ?: "error") })
         return true
     }
 
@@ -81,10 +88,22 @@ class EditTaskActivity: BaseActivity() {
     }
 
     companion object {
-        fun start(activity: Activity, requestCode: Int) {
-            val intent = Intent(activity, EditTaskActivity::class.java)
+
+        val TASK_ID = "taskId"
+
+        /** Edit task */
+        fun start(activity: Activity, requestCode: Int, taskId: String?) {
+            val intent = Intent(activity, EditTaskActivity::class.java).apply {
+                putExtra(TASK_ID, taskId)
+            }
             activity.startActivityForResult(intent, requestCode)
         }
+
+        /** Add new task */
+        fun start(activity: Activity, requestCode: Int) {
+            start(activity, requestCode, null)
+        }
+
     }
 
 }

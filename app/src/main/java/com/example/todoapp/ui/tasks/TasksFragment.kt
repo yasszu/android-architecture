@@ -38,9 +38,7 @@ class TasksFragment : BaseFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        if (savedInstanceState == null) {
-            viewModel.fetchTasks()
-        }
+        savedInstanceState ?: viewModel.fetchTasks()
     }
 
     fun initRecyclerView() {

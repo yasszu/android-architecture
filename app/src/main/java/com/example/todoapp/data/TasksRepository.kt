@@ -14,7 +14,7 @@ import javax.inject.Singleton
 @Singleton
 class TasksRepository @Inject constructor(val database: AppDatabase) {
 
-    fun saveTask(task: Task): Completable = Completable
+    fun createTask(task: Task): Completable = Completable
             .fromAction({ database.tasksDao().insert(task) })
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -32,6 +32,17 @@ class TasksRepository @Inject constructor(val database: AppDatabase) {
     fun getTasks(): Single<List<Task>> = database
             .tasksDao()
             .findAll()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+
+    fun getTask(id: String): Single<Task> = database
+            .tasksDao()
+            .findById(id)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+
+    fun updateTask(task: Task): Completable = Completable
+            .fromAction({ database.tasksDao().update(task) })
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
 
