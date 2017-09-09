@@ -1,12 +1,13 @@
 # Architecture Components with Kotlin
-* Architecture Components:
-    * [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel.html)
-    * [Room](https://developer.android.com/topic/libraries/architecture/room.html)
-* RxJava
+Example of using [Room](https://developer.android.com/topic/libraries/architecture/room.html) and [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel.html) with Kotlin
+
+## Libraries
 * Dagger2
 * [Data Binding](https://developer.android.com/topic/libraries/data-binding/index.html)
+* Robolectric
+* RxJava
 
-## Prerequisites
+## Pre-requisites
 * Android SDK 25
 * Android Build Tool 25.0.2
 * Android Support Library 25.4.0
