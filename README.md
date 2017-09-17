@@ -11,7 +11,7 @@ Example of using [Room](https://developer.android.com/topic/libraries/architectu
 * Android SDK 25
 * Android Build Tool 25.0.2
 * Android Support Library 25.4.0
-* Android Plugin for Gradle 3.0.0-alpha9
+* Android Plugin for Gradle 3.0.0-beta6
 * Kotlin 1.1.3-2
 
 ## Getting Started
