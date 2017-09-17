@@ -2,10 +2,10 @@
 Example of using [Room](https://developer.android.com/topic/libraries/architecture/room.html) and [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel.html) with Kotlin
 
 ## Libraries
-* Dagger2
+* [Dagger2](https://google.github.io/dagger/)
 * [Data Binding](https://developer.android.com/topic/libraries/data-binding/index.html)
-* Robolectric
-* RxJava
+* [Robolectric](https://github.com/robolectric/robolectric)
+* [RxJava2](https://github.com/ReactiveX/RxJava)
 
 ## Pre-requisites
 * Android SDK 25
